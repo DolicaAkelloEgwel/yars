@@ -90,8 +90,8 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 if "github.com" in post_data["body"]:
                     existing_data.append(post_data)
 
-                # Save the data incrementally to the JSON file
-                save_to_json(existing_data, filename)
+                    # Save the data incrementally to the JSON file
+                    save_to_json(existing_data, filename)
             else:
                 print(f"Failed to scrape details for post: {post['title']}")
 
