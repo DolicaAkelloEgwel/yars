@@ -56,7 +56,7 @@ def display_data(miner, subreddit_name, limit=5):
 def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
     try:
         subreddit_posts = miner.fetch_subreddit_posts(
-            subreddit_name, limit=limit, category="top", time_filter="all"
+            subreddit_name, limit=limit, category="top", time_filter="week"
         )
 
         # Load existing data from the JSON file, if available
@@ -87,7 +87,8 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 }
 
                 # Append new post data to existing data
-                existing_data.append(post_data)
+                if "github.com" in post_data["body"]:
+                    existing_data.append(post_data)
 
                 # Save the data incrementally to the JSON file
                 save_to_json(existing_data, filename)
@@ -110,10 +111,10 @@ def save_to_json(data, filename=filename):
 
 # Main execution
 if __name__ == "__main__":
-    subreddit_name = "wbjee"
+    subreddit_name = "StableDiffusion"
 
     # Display data for various functionalities
-    display_data(miner, subreddit_name, limit=3)
+    # display_data(miner, subreddit_name, limit=3)
 
     # Scrape and save subreddit post data to JSON
-    scrape_subreddit_data(subreddit_name, limit=3)
+    scrape_subreddit_data(subreddit_name, limit=50)
