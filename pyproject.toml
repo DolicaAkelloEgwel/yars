@@ -5,7 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "py-trello>=0.20.1",
     "pygments>=2.20.0",
     "requests>=2.32.3",
 ]
