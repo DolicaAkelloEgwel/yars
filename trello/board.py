@@ -14,7 +14,9 @@ query = {
 
 headers = {
   "Accept": "application/json"
-}  
+}
+
+CARDS_URL = "https://api.trello.com/1/cards"
 
 class Board:
     def __init__(self, id: str):
@@ -29,7 +31,7 @@ class Board:
     def lists_as_json(self) -> dict:
         response = requests.request(
             "GET",
-            self.lists_url,
+            self._lists_url,
             headers=headers,
             params=query
         )
@@ -40,5 +42,17 @@ class Board:
             if val["name"] == name:
                 return val["id"]
 
-    def add_card_to_board(self, title: str, content: str, board_id: str):
-        pass
+    def add_card_to_board(self, name: str, desc: str, board_id: str):
+        add_query = query.copy()
+        add_query["idList"] = self._id
+        add_query["name"] = name
+        add_query["desc"] = desc
+
+        response = requests.request(
+            "POST",
+            CARDS_URL,
+            headers=headers,
+            params=add_query,
+        )
+
+        print(response)
