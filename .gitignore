@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 images
 subreddit_data3.json
+trello.api
+trello.secret
