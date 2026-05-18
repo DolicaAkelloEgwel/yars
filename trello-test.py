@@ -10,4 +10,6 @@ research_day = Board(RESEARCH_BOARD_ID)
 day = datetime.datetime.now().strftime("%A")
 
 print(weekly.get_list_id_by_name("Monday"))
-print(research_day.get_list_id_by_name("/r/StableDiffusion"))
+sd = research_day.get_list_id_by_name("/r/StableDiffusion")
+
+research_day.add_card_to_board("test", "", sd)
