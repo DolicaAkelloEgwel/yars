@@ -90,6 +90,10 @@ class YARS:
             response = self.session.get(url, timeout=self.timeout)
             response.raise_for_status()
             logging.info("Post details request successful : %s", url)
+        except requests.exceptions.RetryError as e:
+            logging.error("Hit a retry error: %s", url)
+            time.sleep(20)
+            return None
         except Exception as e:
             logging.info("Post details request unsccessful: %e", e)
             if response.status_code != 200:
