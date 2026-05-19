@@ -1,7 +1,4 @@
-import json
 import logging
-import os
-import sys
 import time
 
 from src.yars.utils import display_results, download_image
@@ -40,7 +37,7 @@ SUBREDDITS = [
 REDDIT_URL_PREFIX = "https://www.reddit.com"
 
 
-# Function to scrape subreddit post details and comments and save to JSON
+# Function to scrape subreddit post details and comments and save to Trello
 def scrape_subreddit_data(subreddit_name, limit=5):
     try:
         subreddit_posts = miner.fetch_subreddit_posts(
