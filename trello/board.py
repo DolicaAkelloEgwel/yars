@@ -7,16 +7,12 @@ with open("trello.api", "r") as f:
 with open("trello.token", "r") as f:
     API_TOKEN = f.read()
 
-query = {
-  'key': API_KEY,
-  'token': API_TOKEN
-}
+query = {"key": API_KEY, "token": API_TOKEN}
 
-headers = {
-  "Accept": "application/json"
-}
+headers = {"Accept": "application/json"}
 
 CARDS_URL = "https://api.trello.com/1/cards"
+
 
 class Board:
     def __init__(self, id: str):
@@ -30,10 +26,7 @@ class Board:
     @property
     def lists_as_json(self) -> dict:
         response = requests.request(
-            "GET",
-            self._lists_url,
-            headers=headers,
-            params=query
+            "GET", self._lists_url, headers=headers, params=query
         )
         return json.loads(response.text)
 
@@ -42,7 +35,9 @@ class Board:
             if val["name"] == name:
                 return val["id"]
 
-    def add_card_to_list(self, name: str, desc: str, card_role: str, list_id: str):
+    def add_card_to_list(
+        self, list_id: str, name: str, desc: str, card_role: str
+    ) -> int:
         add_query = query.copy()
         add_query["idList"] = list_id
         add_query["name"] = name
@@ -56,4 +51,4 @@ class Board:
             params=add_query,
         )
 
-        print(response) 
+        return response.status_code

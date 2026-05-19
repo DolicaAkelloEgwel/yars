@@ -9,7 +9,7 @@ from trello.board import Board
 
 # Initialize the YARS Reddit miner
 miner = YARS()
-filename = "subreddit_data3.json"
+filename = "failure-log.json"
 
 WEEKLY_TASKS_BOARD_ID = "646dd9fdff15415ec19515aa"
 RESEARCH_BOARD_ID = "662bb890493f5d3919f029ba"
@@ -18,6 +18,7 @@ weekly = Board(WEEKLY_TASKS_BOARD_ID)
 research_day = Board(RESEARCH_BOARD_ID)
 
 sd = research_day.get_list_id_by_name("/r/StableDiffusion")
+
 
 # Function to display search results, subreddit posts, and user data
 def display_data(miner, subreddit_name, limit=5):
@@ -84,8 +85,6 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                     "num_comments": post.get("num_comments", 0),
                     "score": post.get("score", 0),
                     "permalink": post.get("permalink", ""),
-                    "image_url": post.get("image_url", ""),
-                    "thumbnail_url": post.get("thumbnail_url", ""),
                     "body": post_details.get("body", ""),
                     "comments": post_details.get("comments", []),
                 }
@@ -94,10 +93,17 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 if "github.com" in post_data["body"]:
                     existing_data.append(post_data)
 
-                    # Save the data incrementally to the JSON file
-                    save_to_json(existing_data, filename)
+                    # Add a link to the trello board
+                    code = research_day.add_card_to_list(
+                        sd,
+                        "https://www.reddit.com" + post_data["permalink"],
+                        "",
+                        "link",
+                    )
 
-                    research_day.add_card_to_list("https://www.reddit.com" + post_data["permalink"], "", "link", sd)
+                    # Save the data incrementally to the JSON file
+                    if code != 200:
+                        save_to_json(existing_data, filename)
             else:
                 print(f"Failed to scrape details for post: {post['title']}")
 
