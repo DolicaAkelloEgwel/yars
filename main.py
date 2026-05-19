@@ -1,7 +1,7 @@
 import logging
 import time
+from datetime import datetime
 
-from src.yars.utils import display_results, download_image
 from src.yars.yars import YARS
 from trello.board import Board
 
@@ -81,17 +81,31 @@ def scrape_subreddit_data(subreddit_name, limit=5):
 
                         # Record failure
                         if code != 200:
+                            print("Trello problem.")
                             logging.error(
                                 f"Failed to add to Trello: {REDDIT_URL_PREFIX}{permalink}"
                             )
             else:
+                print("Probably too many Reddit requests...")
                 logging.error(
                     f"Failed to scrape details for post: {REDDIT_URL_PREFIX}{permalink}"
                 )
 
     except Exception as e:
+        print("Couldn't scrape Subreddit.")
         logging.error(f"Exception occured when scraping {subreddit_name}")
 
 
+run_file = Path(".last-run")
+
+if run_file.exists():
+    with open(".last-run", "r") as f:
+        last_run_time = f.readline()
+        # todo - check date of last run
+
 for subreddit in SUBREDDITS:
     scrape_subreddit_data(subreddit, limit=50)
+
+
+with open(".last-run", "w") as f:
+    f.write(datetime.now())  # todo - convert to string
