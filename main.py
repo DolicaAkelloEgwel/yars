@@ -2,18 +2,22 @@ import json
 import os
 import sys
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(current_dir)
-src_path = os.path.join(project_root, "src")
-sys.path.append(src_path)
+from src.yars.yars import YARS
+from src.yars.utils import display_results, download_image
 
-from yars.yars import YARS
-from yars.utils import display_results, download_image
+from trello.board import Board
 
 # Initialize the YARS Reddit miner
 miner = YARS()
 filename = "subreddit_data3.json"
 
+WEEKLY_TASKS_BOARD_ID = "646dd9fdff15415ec19515aa"
+RESEARCH_BOARD_ID = "662bb890493f5d3919f029ba"
+
+weekly = Board(WEEKLY_TASKS_BOARD_ID)
+research_day = Board(RESEARCH_BOARD_ID)
+
+sd = research_day.get_list_id_by_name("/r/StableDiffusion")
 
 # Function to display search results, subreddit posts, and user data
 def display_data(miner, subreddit_name, limit=5):
@@ -92,6 +96,8 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
 
                     # Save the data incrementally to the JSON file
                     save_to_json(existing_data, filename)
+
+                    research_day.add_card_to_list("https://www.reddit.com" + post_data["permalink"], "", "link", sd)
             else:
                 print(f"Failed to scrape details for post: {post['title']}")
 
