@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 
 from src.yars.utils import display_results, download_image
 from src.yars.yars import YARS
@@ -16,46 +17,20 @@ RESEARCH_BOARD_ID = "662bb890493f5d3919f029ba"
 weekly = Board(WEEKLY_TASKS_BOARD_ID)
 research_day = Board(RESEARCH_BOARD_ID)
 
-sd = research_day.get_list_id_by_name("/r/StableDiffusion")
+reddit_list = research_day.get_list_id_by_name("Reddit")
 
 GITHUB_SUBSTRING = "github.com"
-
-
-# Function to display search results, subreddit posts, and user data
-def display_data(miner, subreddit_name, limit=5):
-    search_results = miner.search_reddit("OpenAI", limit=3)
-    display_results(search_results, "SEARCH")
-
-    # Scrape post details for a specific permalink
-    permalink = "https://www.reddit.com/r/getdisciplined/comments/1frb5ib/what_single_health_test_or_practice_has/".split(
-        "reddit.com"
-    )[
-        1
-    ]
-    post_details = miner.scrape_post_details(permalink)
-    if post_details:
-        display_results(post_details, "POST DATA")
-    else:
-        print("Failed to scrape post details.")
-
-    # Scrape user data
-    user_data = miner.scrape_user_data("iamsecb", limit=2)
-    display_results(user_data, "USER DATA")
-
-    # Scrape top posts from a subreddit
-    subreddit_posts = miner.fetch_subreddit_posts(
-        subreddit_name, limit=limit, category="new", time_filter="week"
-    )
-    display_results(subreddit_posts, "SUBREDDIT Top Posts")
-
-    # Attempt to download images from the first few posts
-    for idx, post in enumerate(subreddit_posts[:3]):
-        try:
-            image_url = post.get("image_url", post.get("thumbnail_url", ""))
-            if image_url:
-                download_image(image_url)
-        except Exception as e:
-            print(f"Error downloading image from post {idx}: {e}")
+SUBREDDITS = [
+    "StableDiffusion",
+    "musiconcrete",
+    "tinycode",
+    "p5js",
+    "generative",
+    "artandcode",
+    "creativecoding",
+    "PlotterArt",
+    "fractals",
+]
 
 
 # Function to scrape subreddit post details and comments and save to JSON
@@ -96,11 +71,11 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
 
                     link = "https://www.reddit.com" + post_data["permalink"]
 
-                    if research_day.not_already_in_list(sd, link):
+                    if research_day.not_already_in_list(reddit_list, link):
 
                         # Add a link to the trello board
                         code = research_day.add_card_to_list(
-                            sd,
+                            reddit_list,
                             link,
                             "",
                             "link",
@@ -113,6 +88,7 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
 
     except Exception as e:
         print(f"Error occurred while scraping subreddit: {e}")
+    time.sleep(5)
 
 
 # Function to save post data to a JSON file
@@ -125,12 +101,5 @@ def save_to_json(data, filename=filename):
         print(f"Error saving data to JSON file: {e}")
 
 
-# Main execution
-if __name__ == "__main__":
-    subreddit_name = "StableDiffusion"
-
-    # Display data for various functionalities
-    # display_data(miner, subreddit_name, limit=3)
-
-    # Scrape and save subreddit post data to JSON
-    scrape_subreddit_data(subreddit_name, limit=50)
+for subreddit in SUBREDDITS:
+    scrape_subreddit_data(subreddit, limit=50)
