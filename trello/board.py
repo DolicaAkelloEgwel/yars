@@ -42,11 +42,12 @@ class Board:
             if val["name"] == name:
                 return val["id"]
 
-    def add_card_to_board(self, name: str, desc: str, board_id: str):
+    def add_card_to_list(self, name: str, desc: str, card_role: str, list_id: str):
         add_query = query.copy()
-        add_query["idList"] = board_id
+        add_query["idList"] = list_id
         add_query["name"] = name
         add_query["desc"] = desc
+        add_query["cardRole"] = card_role
 
         response = requests.request(
             "POST",
@@ -55,4 +56,4 @@ class Board:
             params=add_query,
         )
 
-        print(response)
+        print(response) 
