@@ -44,7 +44,7 @@ class Board:
 
     def add_card_to_board(self, name: str, desc: str, board_id: str):
         add_query = query.copy()
-        add_query["idList"] = self._id
+        add_query["idList"] = board_id
         add_query["name"] = name
         add_query["desc"] = desc
 
