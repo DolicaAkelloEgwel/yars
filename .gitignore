@@ -165,3 +165,4 @@ subreddit_data3.json
 trello.api
 trello.secret
 /trello.token
+/.last-run
