@@ -18,6 +18,8 @@ research_day = Board(RESEARCH_BOARD_ID)
 
 sd = research_day.get_list_id_by_name("/r/StableDiffusion")
 
+GITHUB_SUBSTRING = "github.com"
+
 
 # Function to display search results, subreddit posts, and user data
 def display_data(miner, subreddit_name, limit=5):
@@ -89,20 +91,23 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 }
 
                 # Append new post data to existing data
-                if "github.com" in post_data["body"]:
+                if GITHUB_SUBSTRING in post_data["body"]:
                     existing_data.append(post_data)
 
-                    # Add a link to the trello board
-                    code = research_day.add_card_to_list(
-                        sd,
-                        "https://www.reddit.com" + post_data["permalink"],
-                        "",
-                        "link",
-                    )
+                    link = "https://www.reddit.com" + post_data["permalink"]
 
-                    # Save the data incrementally to the JSON file
-                    if code != 200:
-                        save_to_json(existing_data, filename)
+                    if research_day.not_already_in_list(sd, link):
+
+                        # Add a link to the trello board
+                        code = research_day.add_card_to_list(
+                            sd,
+                            link,
+                            "",
+                            "link",
+                        )
+                        # Save the data incrementally to the JSON file
+                        if code != 200:
+                            save_to_json(existing_data, filename)
             else:
                 print(f"Failed to scrape details for post: {post['title']}")
 

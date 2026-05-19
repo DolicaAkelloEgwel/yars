@@ -53,3 +53,13 @@ class Board:
         )
 
         return response.status_code
+
+    def not_already_in_list(self, list_id: str, name: str) -> bool:
+
+        url = f"https://api.trello.com/1/lists/{list_id}/cards"
+        response = requests.request("GET", url, headers=headers, params=query)
+        if response.status_code == 200:
+            cards = json.loads(response.content)
+            return not name in [card["name"] for card in cards]
+        else:
+            raise Exception
