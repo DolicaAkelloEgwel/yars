@@ -41,18 +41,11 @@ REDDIT_URL_PREFIX = "https://www.reddit.com"
 
 
 # Function to scrape subreddit post details and comments and save to JSON
-def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
+def scrape_subreddit_data(subreddit_name, limit=5):
     try:
         subreddit_posts = miner.fetch_subreddit_posts(
             subreddit_name, limit=limit, category="top", time_filter="week"
         )
-
-        # Load existing data from the JSON file, if available
-        try:
-            with open(filename, "r") as json_file:
-                existing_data = json.load(json_file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            existing_data = []
 
         # Scrape details and comments for each post
         for i, post in enumerate(subreddit_posts, 1):
@@ -76,7 +69,6 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
 
                 # Append new post data to existing data
                 if GITHUB_SUBSTRING in post_data["body"]:
-                    existing_data.append(post_data)
 
                     link = REDDIT_URL_PREFIX + post_data["permalink"]
 
@@ -93,7 +85,7 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                         # Record failure
                         if code != 200:
                             logging.error(
-                                f"Failed to scrape details for post: {REDDIT_URL_PREFIX}{permalink}"
+                                f"Failed to add to Trello: {REDDIT_URL_PREFIX}{permalink}"
                             )
             else:
                 logging.error(
@@ -101,7 +93,7 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 )
 
     except Exception as e:
-        logging.error(f"Exception occured when scarping {subreddit_name}")
+        logging.error(f"Exception occured when scraping {subreddit_name}")
 
 
 for subreddit in SUBREDDITS:
