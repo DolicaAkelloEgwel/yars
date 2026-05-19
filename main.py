@@ -2,9 +2,8 @@ import json
 import os
 import sys
 
-from src.yars.yars import YARS
 from src.yars.utils import display_results, download_image
-
+from src.yars.yars import YARS
 from trello.board import Board
 
 # Initialize the YARS Reddit miner
