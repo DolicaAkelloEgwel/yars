@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import sys
 import time
@@ -7,9 +8,14 @@ from src.yars.utils import display_results, download_image
 from src.yars.yars import YARS
 from trello.board import Board
 
+logger = logging.basicConfig(
+    filename="errors.log",
+    level=logging.ERROR,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
 # Initialize the YARS Reddit miner
 miner = YARS()
-filename = "failure-log.json"
 
 WEEKLY_TASKS_BOARD_ID = "646dd9fdff15415ec19515aa"
 RESEARCH_BOARD_ID = "662bb890493f5d3919f029ba"
@@ -31,6 +37,7 @@ SUBREDDITS = [
     "PlotterArt",
     "fractals",
 ]
+REDDIT_URL_PREFIX = "https://www.reddit.com"
 
 
 # Function to scrape subreddit post details and comments and save to JSON
@@ -51,7 +58,9 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
         for i, post in enumerate(subreddit_posts, 1):
             permalink = post["permalink"]
             post_details = miner.scrape_post_details(permalink)
-            print(f"Processing post {i}")
+            time.sleep(5)
+
+            print(f"Processing post {i} from {subreddit_name}")
 
             if post_details:
                 post_data = {
@@ -69,7 +78,7 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                 if GITHUB_SUBSTRING in post_data["body"]:
                     existing_data.append(post_data)
 
-                    link = "https://www.reddit.com" + post_data["permalink"]
+                    link = REDDIT_URL_PREFIX + post_data["permalink"]
 
                     if research_day.not_already_in_list(reddit_list, link):
 
@@ -80,25 +89,19 @@ def scrape_subreddit_data(subreddit_name, limit=5, filename=filename):
                             "",
                             "link",
                         )
-                        # Save the data incrementally to the JSON file
+
+                        # Record failure
                         if code != 200:
-                            save_to_json(existing_data, filename)
+                            logging.error(
+                                f"Failed to scrape details for post: {REDDIT_URL_PREFIX}{permalink}"
+                            )
             else:
-                print(f"Failed to scrape details for post: {post['title']}")
+                logging.error(
+                    f"Failed to scrape details for post: {REDDIT_URL_PREFIX}{permalink}"
+                )
 
     except Exception as e:
-        print(f"Error occurred while scraping subreddit: {e}")
-    time.sleep(5)
-
-
-# Function to save post data to a JSON file
-def save_to_json(data, filename=filename):
-    try:
-        with open(filename, "w") as json_file:
-            json.dump(data, json_file, indent=4)
-        print(f"Data successfully saved to {filename}")
-    except Exception as e:
-        print(f"Error saving data to JSON file: {e}")
+        logging.error(f"Exception occured when scarping {subreddit_name}")
 
 
 for subreddit in SUBREDDITS:
