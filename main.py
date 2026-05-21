@@ -39,6 +39,12 @@ SUBREDDITS = [
     "creativecoding",
     "PlotterArt",
     "fractals",
+    "puredata",
+    "plugdata",
+    "comfyuiAudio",
+    "proceduralgeneration",
+    "musicprogramming",
+    "cellular_automata",
 ]
 REDDIT_URL_PREFIX = "https://www.reddit.com"
 
