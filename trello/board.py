@@ -1,11 +1,14 @@
 import json
+import os
 
 import requests
 
-with open("trello.api", "r") as f:
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(PROJECT_DIR, "../trello.api"), "r") as f:
     API_KEY = f.read()
 
-with open("trello.token", "r") as f:
+with open(os.path.join(PROJECT_DIR, "../trello.token"), "r") as f:
     API_TOKEN = f.read()
 
 query = {"key": API_KEY, "token": API_TOKEN}
