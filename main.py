@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -6,21 +7,25 @@ from pathlib import Path
 from src.yars.yars import YARS
 from trello.board import Board
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 logger = logging.basicConfig(
-    filename="errors.log",
-    level=logging.ERROR,
+    filename=os.path.join(PROJECT_DIR, "run.log"),
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 # Initialize the YARS Reddit miner
 miner = YARS()
 
+# Trello Board IDs
 WEEKLY_TASKS_BOARD_ID = "646dd9fdff15415ec19515aa"
 RESEARCH_BOARD_ID = "662bb890493f5d3919f029ba"
 
+# Initialise Trello Boards
 weekly = Board(WEEKLY_TASKS_BOARD_ID)
 research_day = Board(RESEARCH_BOARD_ID)
 
+# Store info about Reddit list
 reddit_list = research_day.get_list_id_by_name("Reddit")
 
 GITHUB_SUBSTRING = "github.com"
@@ -97,10 +102,10 @@ def scrape_subreddit_data(subreddit_name, limit=5):
         logging.error(f"Exception occured when scraping {subreddit_name}")
 
 
-run_file = Path(".last-run")
+run_file = Path(os.path.join(PROJECT_DIR, ".last-run"))
 
 if run_file.exists():
-    with open(".last-run", "r") as f:
+    with open(run_file, "r") as f:
         last_run_time = f.readline()
 
     if last_run_time:
@@ -116,7 +121,7 @@ if run_file.exists():
                 microseconds=today.microsecond,
             )
 
-            if today > start_of_week:
+            if last_run_time > start_of_week:
                 logging.info("Has already been once this week. Exiting.")
                 exit()
 
@@ -126,5 +131,5 @@ if run_file.exists():
 for subreddit in SUBREDDITS:
     scrape_subreddit_data(subreddit, limit=50)
 
-with open(".last-run", "w") as f:
+with open(run_file, "w") as f:
     f.write(str(datetime.now()))
