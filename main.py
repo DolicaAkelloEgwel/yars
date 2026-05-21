@@ -1,6 +1,7 @@
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+from pathlib import Path
 
 from src.yars.yars import YARS
 from trello.board import Board
@@ -101,11 +102,29 @@ run_file = Path(".last-run")
 if run_file.exists():
     with open(".last-run", "r") as f:
         last_run_time = f.readline()
-        # todo - check date of last run
+
+    if last_run_time:
+        try:
+            last_run_time = datetime.fromisoformat(last_run_time)
+
+            today = datetime.today()
+            start_of_week = today - timedelta(
+                days=today.weekday(),
+                seconds=today.second,
+                minutes=today.minute,
+                hours=today.hour,
+                microseconds=today.microsecond,
+            )
+
+            if today > start_of_week:
+                logging.info("Has already been once this week. Exiting.")
+                exit()
+
+        except ValueError:
+            logging.info("Unable to read last date of run - running anyway.")
 
 for subreddit in SUBREDDITS:
     scrape_subreddit_data(subreddit, limit=50)
 
-
 with open(".last-run", "w") as f:
-    f.write(datetime.now())  # todo - convert to string
+    f.write(str(datetime.now()))
