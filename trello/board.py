@@ -3,12 +3,12 @@ import os
 
 import requests
 
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(PROJECT_DIR, "../trello.api"), "r") as f:
+with open(os.path.join(CURRENT_FILE_DIR, "../trello.api"), "r") as f:
     API_KEY = f.read()
 
-with open(os.path.join(PROJECT_DIR, "../trello.token"), "r") as f:
+with open(os.path.join(CURRENT_FILE_DIR, "../trello.token"), "r") as f:
     API_TOKEN = f.read()
 
 query = {"key": API_KEY, "token": API_TOKEN}
