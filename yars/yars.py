@@ -1,10 +1,13 @@
 from __future__ import annotations
-from .sessions import RandomUserAgentSession
-import time
+
 import random
+import time
+
 import requests
-from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+from .sessions import RandomUserAgentSession
 
 
 class YARS:

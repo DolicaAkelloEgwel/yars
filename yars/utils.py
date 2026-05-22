@@ -1,9 +1,10 @@
-import os
 import csv
 import json
 import logging
-import requests
+import os
 from urllib.parse import urlparse
+
+import requests
 from pygments import formatters, highlight, lexers
 
 logging.basicConfig(
