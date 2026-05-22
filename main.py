@@ -50,7 +50,7 @@ REDDIT_URL_PREFIX = "https://www.reddit.com"
 
 
 # Function to scrape subreddit post details and comments and save to Trello
-def scrape_subreddit_data(subreddit_name, limit=5):
+def scrape_subreddit_data(subreddit_name: str, limit:int = 5):
     try:
         subreddit_posts = miner.fetch_subreddit_posts(
             subreddit_name, limit=limit, category="top", time_filter="week"
@@ -104,7 +104,7 @@ def scrape_subreddit_data(subreddit_name, limit=5):
                 )
 
     except Exception as e:
-        print("Couldn't scrape Subreddit.")
+        print("Couldn't scrape Subreddit.", e)
         logging.error(f"Exception occured when scraping {subreddit_name}")
 
 
