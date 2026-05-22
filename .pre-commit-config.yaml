@@ -30,3 +30,8 @@ repos:
       - id: ruff
         types: [file]
         types_or: [python, pyi, toml]
+  - repo: https://github.com/pycqa/isort
+    rev: 6.1.0
+    hooks:
+      - id: isort
+        name: isort (python)
