@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from src.yars.yars import YARS
+from yars.yars import YARS
 from trello.board import Board
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
