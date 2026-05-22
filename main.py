@@ -4,8 +4,8 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from yars.yars import YARS
 from trello.board import Board
+from yars.yars import YARS
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -50,7 +50,7 @@ REDDIT_URL_PREFIX = "https://www.reddit.com"
 
 
 # Function to scrape subreddit post details and comments and save to Trello
-def scrape_subreddit_data(subreddit_name: str, limit:int = 5):
+def scrape_subreddit_data(subreddit_name: str, limit: int = 5):
     try:
         subreddit_posts = miner.fetch_subreddit_posts(
             subreddit_name, limit=limit, category="top", time_filter="week"
@@ -105,7 +105,7 @@ def scrape_subreddit_data(subreddit_name: str, limit:int = 5):
 
     except Exception as e:
         print("Couldn't scrape Subreddit.", e)
-        logging.error(f"Exception occured when scraping {subreddit_name}")
+        logging.error(f"Exception occured when scraping {subreddit_name}: {e}")
 
 
 run_file = Path(os.path.join(PROJECT_DIR, ".last-run"))
