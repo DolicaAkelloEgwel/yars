@@ -24,10 +24,6 @@ class Board:
         self._lists_url = f"https://api.trello.com/1/boards/{self._id}/lists"
 
     @property
-    def lists_url(self) -> str:
-        return self._lists_url
-
-    @property
     def lists_as_json(self) -> dict:
         response = requests.request(
             "GET", self._lists_url, headers=headers, params=query
