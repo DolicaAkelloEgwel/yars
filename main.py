@@ -104,7 +104,6 @@ def scrape_subreddit_data(subreddit_name: str, limit: int = 5):
                 )
 
     except Exception as e:
-        print("Couldn't scrape Subreddit.", e)
         logging.error(f"Exception occured when scraping {subreddit_name}: {e}")
 
 
